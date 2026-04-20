@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LootSaku - Bagi Bagi Diamond</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #00e6ff;
+            --primary-hover: #00b8cc;
+            --bg-start: #0f0c29;
+            --bg-mid: #302b63;
+            --bg-end: #24243e;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-muted: #8892b0;
+            --neumorphic-light: rgba(255, 255, 255, 0.03);
+            --neumorphic-shadow: rgba(0, 0, 0, 0.8);
+            --border-color: rgba(0, 230, 255, 0.2);
+            --success-color: #4caf50;
+            --error-color: #f44336;
+            --pending-color: #ff9800;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-mid), var(--bg-end));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 80px 15px 20px 15px; color: var(--text-main);
+        }
+
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* NAVBAR STYLES */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(15, 12, 41, 0.8); backdrop-filter: blur(10px);
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); z-index: 1000;
+        }
+        .navbar .brand { font-family: 'Syncopate', sans-serif; font-size: 18px; font-weight: 700; color: var(--primary-color); text-shadow: 0 0 10px rgba(0, 230, 255, 0.5); }
+        .btn-nav {
+            background: rgba(0, 230, 255, 0.1); border: 1px solid var(--primary-color);
+            color: var(--primary-color); padding: 8px 15px; border-radius: 8px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; font-size: 13px; text-transform: uppercase;
+        }
+        .btn-nav:hover { background: var(--primary-color); color: #000; box-shadow: 0 0 15px var(--primary-color); }
+
+        .container {
+            background-color: var(--card-bg); backdrop-filter: blur(15px);
+            width: 100%; max-width: 600px; padding: 45px 35px; border-radius: 20px;
+            box-shadow: 15px 15px 35px var(--neumorphic-shadow), -15px -15px 35px var(--neumorphic-light), inset 1px 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .header { text-align: center; margin-bottom: 35px; }
+        .header h1 {
+            font-family: 'Syncopate', sans-serif; color: var(--primary-color);
+            font-size: 22px; font-weight: 700; margin-bottom: 12px; line-height: 1.4; text-shadow: 0 0 15px rgba(0, 230, 255, 0.6);
+        }
+        .header p { color: #ddd; font-size: 14px; line-height: 1.6; letter-spacing: 0.5px; }
+        
+        .badge {
+            display: inline-block; background: rgba(244, 67, 54, 0.2); color: #ff5252;
+            padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid rgba(244, 67, 54, 0.5);
+            margin-top: 10px; letter-spacing: 1px;
+        }
+
+        .rules-box {
+            background: rgba(0, 230, 255, 0.05); border: 1px solid var(--primary-color); 
+            border-radius: 12px; padding: 20px; box-shadow: inset 2px 2px 10px rgba(0,0,0,0.5); 
+            font-size: 13px; line-height: 1.6; margin-bottom: 25px;
+        }
+        .rules-box h3 { color: var(--primary-color); margin-bottom: 10px; font-size: 15px; }
+        .rules-box ul { padding-left: 20px; margin-top: 10px; color: #ddd; }
+        .rules-box li { margin-bottom: 8px; }
+        .rules-box a { color: var(--primary-color); text-decoration: none; font-weight: bold; background: rgba(0, 230, 255, 0.1); padding: 2px 5px; border-radius: 4px; }
+        .rules-box a:hover { text-decoration: underline; background: rgba(0, 230, 255, 0.2); }
+
+        .form-group { margin-bottom: 25px; position: relative; }
+        .form-group label {
+            display: block; margin-bottom: 10px; font-weight: 600;
+            color: var(--text-main); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .input-with-icon { position: relative; }
+        .input-with-icon i {
+            position: absolute; left: 18px; top: 22px; transform: translateY(-50%);
+            color: var(--text-muted); transition: color 0.3s ease; z-index: 2;
+        }
+
+        .form-group input[type="text"], .form-group input[type="tel"], 
+        .form-group select, .form-group input[type="file"] {
+            width: 100%; padding: 16px 16px 16px 50px; background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent; border-radius: 12px; font-size: 14px; color: var(--text-main);
+            box-shadow: inset 5px 5px 10px var(--neumorphic-shadow), inset -5px -5px 10px var(--neumorphic-light);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input[type="file"] { padding: 12px 16px 12px 50px; font-size: 12px; }
+        .form-group input[type="file"]::file-selector-button {
+            background-color: var(--primary-color); color: #000; font-weight: bold;
+            border: none; padding: 8px 15px; border-radius: 8px; margin-right: 15px; cursor: pointer;
+        }
+
+        .form-group select option { background-color: var(--bg-start); color: var(--text-main); }
+        .form-group input::placeholder { color: rgba(255, 255, 255, 0.3); font-size: 13px; }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none; box-shadow: inset 2px 2px 5px var(--neumorphic-shadow), inset -2px -2px 5px var(--neumorphic-light), 0 0 20px rgba(0, 230, 255, 0.4);
+            border-color: rgba(0, 230, 255, 0.3);
+        }
+        .form-group input:focus + i, .form-group select:focus + i { color: var(--primary-color); text-shadow: 0 0 10px var(--primary-color); }
+
+        .file-info { font-size: 11px; color: #ffeb3b; margin-top: 5px; display: block; }
+        .dynamic-field { display: none; } 
+
+        .btn-submit {
+            width: 100%; background-color: var(--bg-start); color: var(--primary-color); border: 1px solid var(--primary-color);
+            padding: 18px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 2px; margin-top: 25px; box-shadow: 8px 8px 20px var(--neumorphic-shadow), -8px -8px 20px var(--neumorphic-light);
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover { background-color: var(--primary-color); color: #000; box-shadow: 0 0 20px var(--primary-color); }
+        .btn-submit:disabled { background-color: rgba(255,255,255,0.05); color: var(--text-muted); cursor: not-allowed; box-shadow: none; border-color: transparent; }
+
+        .pernyataan-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .checkbox-group { display: flex; align-items: flex-start; margin-bottom: 12px; }
+        .checkbox-group input[type="checkbox"] { margin-top: 4px; margin-right: 12px; cursor: pointer; width: 18px; height: 18px; accent-color: var(--primary-color); }
+        .checkbox-group label { text-transform: none; font-size: 12px; letter-spacing: 0; color: #ddd; cursor: pointer; line-height: 1.5; margin-bottom: 0; font-weight: 400;}
+
+        .alert { padding: 15px; border-radius: 10px; margin-top: 25px; text-align: center; font-size: 13px; font-weight: 600; display: none; backdrop-filter: blur(5px); }
+        .alert.success { background-color: rgba(76, 175, 80, 0.2); color: #81c784; border: 1px solid rgba(76, 175, 80, 0.5); display: block; }
+        .alert.error { background-color: rgba(244, 67, 54, 0.2); color: #e57373; border: 1px solid rgba(244, 67, 54, 0.5); display: block; }
+
+        /* MODAL STYLES */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-content {
+            background-color: var(--bg-mid); border: 1px solid var(--primary-color);
+            border-radius: 15px; width: 100%; max-width: 400px; padding: 30px; position: relative;
+            box-shadow: 0 0 30px rgba(0, 230, 255, 0.3); text-align: center;
+        }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: #fff; font-size: 24px; font-weight: bold; cursor: pointer; }
+        .close-btn:hover { color: var(--error-color); }
+        .modal-content h2 { margin-bottom: 20px; font-size: 18px; color: var(--primary-color); font-family: 'Syncopate', sans-serif;}
+        
+        .status-box { margin-top: 20px; padding: 15px; border-radius: 10px; display: none; font-size: 14px; font-weight: bold; line-height: 1.5; }
+        .status-box.beruntung { display: block; background: rgba(76, 175, 80, 0.2); color: #81c784; border: 1px solid var(--success-color); }
+        .status-box.gagal { display: block; background: rgba(244, 67, 54, 0.2); color: #e57373; border: 1px solid var(--error-color); }
+        .status-box.pending { display: block; background: rgba(255, 152, 0, 0.2); color: #ffb74d; border: 1px solid var(--pending-color); }
+
+        @media (max-width: 500px) { 
+            .container { padding: 35px 20px; } 
+            .navbar { padding: 15px 20px; }
+            .navbar .brand { font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">LOOTSAKU</div>
+        <button id="btnBukaModal" class="btn-nav"><i class="fas fa-search"></i> Cek Status</button>
+    </nav>
+
+    <div id="statusModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="btnCloseModal">&times;</span>
+            <h2>CEK STATUS PENGIRIMAN</h2>
+            <p style="font-size: 12px; color: #ddd; margin-bottom: 20px;">Masukkan Nomor WhatsApp yang kamu gunakan saat mendaftar.</p>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <div class="input-with-icon">
+                    <input type="tel" id="cekNoWa" placeholder="Contoh: 081234567890">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+            </div>
+            
+            <button id="btnCekData" class="btn-submit" style="margin-top: 5px; padding: 12px;">Cari Data</button>
+            <div id="hasilCekStatus" class="status-box"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>LOOTSAKU EVENT</h1>
+            <p>Bagi-Bagi Diamond Gratis 💎</p>
+            <div class="badge">🔥 10 ORANG TERCEPAT 🔥</div>
+        </div>
+
+        <div class="rules-box">
+            <h3>📜 Syarat & Ketentuan:</h3>
+            <ul>
+                <li>Wajib <strong>Subscribe</strong> YouTube Channel <a href="https://youtube.com/@onedayfactt?si=_sZvssJz573K8O7Q" target="_blank"><i class="fab fa-youtube" style="color:red;"></i> One Day Fact</a>.</li>
+                <li>Wajib <strong>Like</strong> video ini: <a href="LINK_VIDEO_KAMU_DISINI" target="_blank"><i class="fas fa-play-circle" style="color:#00e6ff;"></i> Tonton & Like Video Ini</a>.</li>
+                <li>Pilih game dan masukkan data akun dengan benar.</li>
+                <li>Hanya berlaku untuk <strong>10 pendaftar pertama</strong> dengan 2 bukti screenshot yang valid.</li>
+            </ul>
+        </div>
+
+        <form id="giveawayForm">
+            <div class="form-group">
+                <label>Pilih Game / Nominal Diamond <span style="color:#f44336">*</span></label>
+                <div class="input-with-icon">
+                    <select id="pilihanGame" required>
+                        <option value="" disabled selected>-- Pilih Game --</option>
+                        <option value="Mobile Legends - 2199 DM">Mobile Legends (2199 Diamond)</option>
+                        <option value="Free Fire - 566 DM">Free Fire (566 Diamond)</option>
+                    </select>
+                    <i class="fas fa-gamepad"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Nama Akun Game (Nickname) <span style="color:#f44336">*</span></label>
+                <div class="input-with-icon">
+                    <input type="text" id="namaAkun" placeholder="Masukkan Nickname Game Anda" required>
+                    <i class="fas fa-user-ninja"></i>
+                </div>
+            </div>
+
+            <div id="ml-fields" class="dynamic-field">
+                <div class="form-group">
+                    <label>ID Game Mobile Legends <span style="color:#f44336">*</span></label>
+                    <div class="input-with-icon">
+                        <input type="text" id="idGameML" placeholder="Contoh: 12345678">
+                        <i class="fas fa-id-badge"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Server ID Mobile Legends <span style="color:#f44336">*</span></label>
+                    <div class="input-with-icon">
+                        <input type="text" id="idServerML" placeholder="Contoh: 1234">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ff-fields" class="dynamic-field">
+                <div class="form-group">
+                    <label>ID Game Free Fire <span style="color:#f44336">*</span></label>
+                    <div class="input-with-icon">
+                        <input type="text" id="idGameFF" placeholder="Contoh: 1234567890">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Nomor WhatsApp Aktif <span style="color:#f44336">*</span></label>
+                <div class="input-with-icon">
+                    <input type="tel" id="noWa" placeholder="Contoh: 081234567890 (Untuk konfirmasi)" required pattern="\d{10,14}">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Bukti Screenshot <strong>SUBSCRIBE</strong> <span style="color:#f44336">*</span></label>
+                <div class="input-with-icon">
+                    <input type="file" id="buktiSubscribe" accept="image/*, .heic, .heif" required>
+                    <i class="fas fa-bell"></i>
+                </div>
+                <span class="file-info">SS bukti Anda telah Subscribe Channel One Day Fact.</span>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Bukti Screenshot <strong>LIKE VIDEO</strong> <span style="color:#f44336">*</span></label>
+                <div class="input-with-icon">
+                    <input type="file" id="buktiLike" accept="image/*, .heic, .heif" required>
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <span class="file-info">SS bukti Anda telah Like video yang ditentukan di atas.</span>
+            </div>
+
+            <div class="form-group" style="margin-top: 35px;">
+                <label style="color: var(--primary-color); font-size: 14px; text-align: center; margin-bottom: 15px;">KONFIRMASI</label>
+                <div class="pernyataan-box">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="pernyataan1" required>
+                        <label for="pernyataan1">Saya bersumpah bahwa bukti screenshot yang saya kirimkan adalah asli dan bukan hasil editan/palsu.</label>
+                    </div>
+                    <div class="checkbox-group" style="margin-bottom: 0;">
+                        <input type="checkbox" id="pernyataan2" required>
+                        <label for="pernyataan2">Saya menyadari jika kuota 10 orang tercepat sudah penuh, maka diamond tidak akan masuk ke akun saya.</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">KLAIM DIAMOND SEKARANG</button>
+            <div id="alertMessage" class="alert"></div>
+        </form>
+    </div>
+
+    <script type="module">
+        // Tambahan import 'query, where, getDocs' untuk mengambil data pencarian
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB_Vm_WiUckLP-FmoY_sampj-P1rR943PY",
+            authDomain: "pendaftran-kunjungan-aice.firebaseapp.com",
+            projectId: "pendaftran-kunjungan-aice",
+            storageBucket: "pendaftran-kunjungan-aice.firebasestorage.app",
+            messagingSenderId: "131381593832",
+            appId: "1:131381593832:web:b7c094fc720c3f65c16b5d",
+            measurementId: "G-E5ES6P4CD8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // ==========================================
+        // LOGIKA POP-UP CEK STATUS
+        // ==========================================
+        const modal = document.getElementById('statusModal');
+        const btnBukaModal = document.getElementById('btnBukaModal');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+        const btnCekData = document.getElementById('btnCekData');
+        const inputCekWa = document.getElementById('cekNoWa');
+        const hasilCekStatus = document.getElementById('hasilCekStatus');
+
+        // Buka / Tutup Modal
+        btnBukaModal.onclick = () => { modal.style.display = "flex"; inputCekWa.value = ''; hasilCekStatus.className = "status-box"; }
+        btnCloseModal.onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; }
+
+        // Fungsi Pencarian Data di Firestore
+        btnCekData.onclick = async () => {
+            const wa = inputCekWa.value.trim();
+            if (!wa) {
+                alert("Silakan masukkan Nomor WhatsApp terlebih dahulu!");
+                return;
+            }
+
+            btnCekData.disabled = true;
+            btnCekData.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+            hasilCekStatus.className = "status-box"; 
+            
+            try {
+                // Mencari data berdasarkan Nomor WA
+                const q = query(collection(db, "lootsaku_giveaway"), where("noWa", "==", wa));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    hasilCekStatus.className = "status-box gagal";
+                    hasilCekStatus.innerHTML = "<i class='fas fa-times-circle'></i> Data tidak ditemukan. Pastikan nomor WA sesuai saat mendaftar.";
+                } else {
+                    // Ambil dokumen pertama yang cocok
+                    let dataDitemukan = querySnapshot.docs[0].data();
+                    let statusDb = dataDitemukan.status; // Harus diupdate manual dari Firebase Console oleh admin
+
+                    if (statusDb === "BERUNTUNG") {
+                        hasilCekStatus.className = "status-box beruntung";
+                        hasilCekStatus.innerHTML = "<i class='fas fa-check-circle'></i> SELAMAT! Kamu termasuk 10 orang tercepat. Diamond telah dikirim ke akun kamu!";
+                    } else if (statusDb === "TIDAK BERUNTUNG") {
+                        hasilCekStatus.className = "status-box gagal";
+                        hasilCekStatus.innerHTML = "<i class='fas fa-sad-tear'></i> YAHH! Maaf ya, kuota sudah penuh atau buktimu tidak valid. Jangan menyerah, coba lagi di event selanjutnya!";
+                    } else {
+                        hasilCekStatus.className = "status-box pending";
+                        hasilCekStatus.innerHTML = "<i class='fas fa-clock'></i> Data kamu masih dalam proses pengecekan oleh Admin. Silakan cek lagi nanti ya!";
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                hasilCekStatus.className = "status-box gagal";
+                hasilCekStatus.innerHTML = "<i class='fas fa-exclamation-triangle'></i> Terjadi kesalahan jaringan. Coba lagi.";
+            } finally {
+                btnCekData.disabled = false;
+                btnCekData.innerHTML = 'Cari Data';
+            }
+        };
+
+
+        // ==========================================
+        // LOGIKA FORMULIR PENDAFTARAN (SAMA SEPERTI SEBELUMNYA)
+        // ==========================================
+        const form = document.getElementById('giveawayForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertMessage = document.getElementById('alertMessage');
+        const pilihanGame = document.getElementById('pilihanGame');
+        
+        const mlFields = document.getElementById('ml-fields');
+        const ffFields = document.getElementById('ff-fields');
+        const idGameML = document.getElementById('idGameML');
+        const idServerML = document.getElementById('idServerML');
+        const idGameFF = document.getElementById('idGameFF');
+
+        pilihanGame.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val.includes('Mobile Legends')) {
+                mlFields.style.display = 'block'; ffFields.style.display = 'none';
+                idGameML.required = true; idServerML.required = true; idGameFF.required = false;
+            } else if (val.includes('Free Fire')) {
+                mlFields.style.display = 'none'; ffFields.style.display = 'block';
+                idGameML.required = false; idServerML.required = false; idGameFF.required = true;
+            }
+        });
+
+        function showAlert(message, type) {
+            alertMessage.textContent = message; alertMessage.className = `alert ${type}`;
+            alertMessage.style.display = 'block'; alertMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function checkFileSize(file) {
+            if (!file) return true;
+            return file.size <= 10 * 1024 * 1024;
+        }
+
+        async function uploadImage(file) {
+            let fileToUpload = file;
+            const namaFile = file.name.toLowerCase();
+            
+            if (file.type === "image/heic" || file.type === "image/heif" || namaFile.endsWith(".heic") || namaFile.endsWith(".heif")) {
+                try {
+                    const convertedBlob = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.8 });
+                    const finalBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+                    const namaBaru = file.name.replace(/\.[^/.]+$/, ".jpg");
+                    fileToUpload = new File([finalBlob], namaBaru, { type: "image/jpeg" });
+                } catch (error) { throw new Error("Gagal mengkonversi format gambar."); }
+            }
+
+            const imgbbAPIKey = "1673e7b27bb7c96c324b1b26cc392dca"; 
+            const formData = new FormData();
+            formData.append("image", fileToUpload);
+
+            try {
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPIKey}`, { method: 'POST', body: formData });
+                const result = await response.json();
+                if (result.success) { return result.data.url; } 
+                else { throw new Error("Gagal upload ke ImgBB"); }
+            } catch (error) { throw error; }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const gameTerpilih = pilihanGame.value;
+            
+            let dataToSave = {
+                pilihanGame: gameTerpilih,
+                namaAkun: document.getElementById('namaAkun').value.trim(),
+                noWa: document.getElementById('noWa').value.trim(),
+            };
+
+            if (gameTerpilih.includes('Mobile Legends')) {
+                dataToSave.idGame = idGameML.value.trim();
+                dataToSave.idServer = idServerML.value.trim();
+            } else {
+                dataToSave.idGame = idGameFF.value.trim();
+            }
+
+            const fileSub = document.getElementById('buktiSubscribe').files[0];
+            const fileLike = document.getElementById('buktiLike').files[0];
+
+            if (!checkFileSize(fileSub) || !checkFileSize(fileLike)) {
+                showAlert('GAGAL: Ukuran salah satu foto melebihi 10 MB. Silakan kompres foto Anda.', 'error'); return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> MENGUPLOAD 2 GAMBAR & MEMPROSES DATA...';
+            alertMessage.style.display = 'none';
+
+            try {
+                const [urlSub, urlLike] = await Promise.all([ uploadImage(fileSub), uploadImage(fileLike) ]);
+
+                await addDoc(collection(db, "lootsaku_giveaway"), {
+                    ...dataToSave,
+                    buktiSubscribeUrl: urlSub,
+                    buktiLikeUrl: urlLike,
+                    tanggalKlaim: serverTimestamp(),
+                    status: "PENDING PENGECEKAN" // INI STATUS AWAL YANG AKAN DICEK
+                });
+
+                showAlert('BERHASIL! Data terkirim. Jika Anda masuk 10 tercepat dan bukti valid, Diamond akan dikirim ke akun Anda.', 'success');
+                form.reset();
+                mlFields.style.display = 'none';
+                ffFields.style.display = 'none';
+
+            } catch (error) {
+                console.error(error); showAlert('GAGAL MENGIRIM DATA! Pastikan koneksi internet Anda stabil.', 'error');
+            } finally {
+                submitBtn.disabled = false; submitBtn.textContent = 'KLAIM DIAMOND SEKARANG';
+            }
+        });
+    </script>
+</body>
+                                                      </html>
